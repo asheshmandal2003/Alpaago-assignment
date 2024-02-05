@@ -1,8 +1,9 @@
-import { GitHub, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Box,
   Button,
   Card,
+  CircularProgress,
   Divider,
   IconButton,
   InputAdornment,
@@ -12,7 +13,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 
@@ -22,7 +23,9 @@ type Values = {
 };
 
 interface AuthFormProps {
-  onSubmit(values: Values): void;
+  onSubmit(values: Values, setDisable: Dispatch<SetStateAction<boolean>>): void;
+  signinWithGoogle(): void;
+  signinWithGitHub(): void;
   pageType: string;
 }
 
@@ -43,15 +46,21 @@ const validationSchema = yup.object({
     .required("Password is required!"),
 });
 
-const AuthForm = ({ onSubmit, pageType }: AuthFormProps) => {
+const AuthForm = ({
+  onSubmit,
+  signinWithGoogle,
+  signinWithGitHub,
+  pageType,
+}: AuthFormProps) => {
   const navigate = useNavigate();
   const phone = useMediaQuery("(max-width:600px)");
 
-  const [visibility, setVisibility] = useState(false);
+  const [disable, setDisable] = useState(() => false);
+  const [visibility, setVisibility] = useState(() => false);
 
   const formik = useFormik({
     initialValues,
-    onSubmit: (values) => onSubmit(values),
+    onSubmit: (values) => onSubmit(values, setDisable),
     validationSchema,
   });
   return (
@@ -104,20 +113,22 @@ const AuthForm = ({ onSubmit, pageType }: AuthFormProps) => {
         {pageType === "signup" ? (
           <Button
             fullWidth
+            disabled={disable}
             variant="contained"
             type="submit"
             size={phone ? "small" : "medium"}
           >
-            Sign Up
+            {disable ? <CircularProgress size={25} /> : "Sign Up"}
           </Button>
         ) : (
           <Button
             fullWidth
+            disabled={disable}
             variant="contained"
             type="submit"
             size={phone ? "small" : "medium"}
           >
-            Sign In
+            {disable ? <CircularProgress size={25} /> : "Sign In"}
           </Button>
         )}
         <Divider>
@@ -126,15 +137,19 @@ const AuthForm = ({ onSubmit, pageType }: AuthFormProps) => {
           </Typography>
         </Divider>
         <Box alignSelf="center" display="flex" flexShrink={0} gap={2}>
-          <IconButton size="large">
+          <IconButton size="large" onClick={signinWithGoogle}>
             <img
-              src="/images/google.png"
-              alt="Googel"
+              src="/images/google.svg"
+              alt="Google"
               style={{ height: 30, width: 30 }}
             />
           </IconButton>
-          <IconButton size="large">
-            <GitHub sx={{ fontSize: 30 }} />
+          <IconButton size="large" onClick={signinWithGitHub}>
+            <img
+              src="/images/github.svg"
+              alt="GitHub"
+              style={{ height: 30, width: 30 }}
+            />
           </IconButton>
         </Box>
         {pageType === "signup" ? (
