@@ -1,16 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import { app } from "../../firebase/firebaseConfig";
 import { ErrorAlert, SuccessAlert } from "../components/Alert";
 import { FlexCenter } from "../components/FlexCenter";
 import AuthForm from "../layouts/AuthForm";
 import {
-  getAuth,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
   GithubAuthProvider,
 } from "firebase/auth";
 import { Dispatch, SetStateAction } from "react";
+import { auth } from "../../firebase/firebaseConfig";
 
 type Values = {
   email: string;
@@ -19,7 +18,6 @@ type Values = {
 
 const Signin = () => {
   const navigate = useNavigate();
-  const auth = getAuth(app);
   const googleAuthProvider = new GoogleAuthProvider();
   const githubAuthProvider = new GithubAuthProvider();
 

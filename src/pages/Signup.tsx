@@ -1,8 +1,6 @@
 import { FlexCenter } from "../components/FlexCenter";
 import AuthForm from "../layouts/AuthForm";
-import { app } from "../../firebase/firebaseConfig";
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
@@ -11,15 +9,17 @@ import {
 import { useNavigate } from "react-router-dom";
 import { ErrorAlert, SuccessAlert } from "../components/Alert";
 import { Dispatch, SetStateAction } from "react";
+import { auth, db } from "../../firebase/firebaseConfig";
+import { addDoc, collection } from "firebase/firestore";
 
 type Values = {
+  name: string;
   email: string;
   password: string;
 };
 
 const Signup = () => {
   const navigate = useNavigate();
-  const auth = getAuth(app);
   const googleAuthProvider = new GoogleAuthProvider();
   const githubAuthProvider = new GithubAuthProvider();
 
@@ -29,11 +29,19 @@ const Signup = () => {
   ) {
     setDisabled(true);
     await createUserWithEmailAndPassword(auth, values.email, values.password)
-      .then(() => {
-        SuccessAlert("You're successfully registered!");
-        navigate("/");
+      .then(async (res) => {
+        await addDoc(collection(db, "users"), {
+          email: values.email,
+          name: values.name,
+          status: true,
+          createdAt: res.user.metadata.creationTime,
+        }).then(() => {
+          SuccessAlert("You're successfully registered!");
+          navigate("/");
+        });
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log(err);
         ErrorAlert("Something went wrong!");
         setDisabled(false);
       });
@@ -41,9 +49,16 @@ const Signup = () => {
 
   async function signInWithGoogle() {
     signInWithPopup(auth, googleAuthProvider)
-      .then(() => {
-        SuccessAlert("You're successfully registered!");
-        navigate("/");
+      .then(async (res) => {
+        await addDoc(collection(db, "users"), {
+          email: res.user.email,
+          name: res.user.displayName,
+          status: true,
+          createdAt: res.user.metadata.creationTime,
+        }).then(() => {
+          SuccessAlert("You're successfully registered!");
+          navigate("/");
+        });
       })
       .catch((): void => {
         ErrorAlert("Something went wrong!");
@@ -52,9 +67,16 @@ const Signup = () => {
 
   async function signInWithGithub() {
     signInWithPopup(auth, githubAuthProvider)
-      .then(() => {
-        SuccessAlert("You're successfully registered!");
-        navigate("/");
+      .then(async (res) => {
+        await addDoc(collection(db, "users"), {
+          email: res.user.email,
+          name: res.user.displayName,
+          status: true,
+          createdAt: res.user.metadata.creationTime,
+        }).then(() => {
+          SuccessAlert("You're successfully registered!");
+          navigate("/");
+        });
       })
       .catch((): void => {
         ErrorAlert("Something went wrong!");

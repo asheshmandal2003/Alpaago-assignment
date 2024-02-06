@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 
 type Values = {
+  name: string;
   email: string;
   password: string;
 };
@@ -30,11 +31,13 @@ interface AuthFormProps {
 }
 
 const initialValues = {
+  name: "",
   email: "",
   password: "",
 };
 
 const validationSchema = yup.object({
+  name: yup.string().max(50, "Name cannot contain more than 50 characters!"),
   email: yup
     .string()
     .email("Enter a valid email!")
@@ -73,6 +76,20 @@ const AuthForm = ({
         <Typography variant="h6" alignSelf="center">
           {pageType === "signup" ? "Sign Up" : "Sign In"}
         </Typography>
+        {pageType === "signup" && (
+          <TextField
+            fullWidth
+            name="name"
+            type="text"
+            label="Name"
+            size={phone ? "small" : "medium"}
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={Boolean(formik.touched.name) && Boolean(formik.errors.name)}
+            helperText={Boolean(formik.touched.name) && formik.errors.name}
+          />
+        )}
         <TextField
           fullWidth
           name="email"
