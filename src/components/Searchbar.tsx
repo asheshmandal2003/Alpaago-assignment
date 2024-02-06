@@ -5,9 +5,9 @@ import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 const Search = styled("form")(({ theme }) => ({
   position: "relative",
   borderRadius: 10,
-  backgroundColor: alpha(theme.palette.common.black, 0.15),
+  backgroundColor: alpha(theme.palette.common.black, 0.05),
   "&:hover": {
-    backgroundColor: alpha(theme.palette.common.black, 0.25),
+    backgroundColor: alpha(theme.palette.common.black, 0.15),
   },
   margin: 0,
   width: "80%",

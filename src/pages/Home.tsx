@@ -1,17 +1,44 @@
-// import { Box, styled } from "@mui/material";
 import axios from "axios";
 import { FlexCenter } from "../components/FlexCenter";
 import WeatherCard from "../layouts/WeatherCard";
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
+import { ErrorAlert } from "../components/Alert";
+
+type WeatherData = {
+  name: string;
+  timezone: number;
+  sunrise: number;
+  sunset: number;
+  temperature: number;
+  wind_speed: number;
+  humidity: number;
+  pressure: number;
+  visibility: number;
+  description: string;
+  icon: string;
+};
 
 const Home = () => {
+  const [weatherDetails, setWeatherDetails] = useState<WeatherData | null>(
+    null
+  );
+  const [loading, setLoading] = useState(true);
+
   const fetchWeather = async (
     event: ChangeEvent<HTMLFormElement>,
-    query: string,
+    query: string = "Kolkata",
     setSearching: Dispatch<SetStateAction<boolean>>
   ) => {
     event.preventDefault();
+    if (query === "") return;
     setSearching(true);
+    setLoading(true);
     await axios
       .get(
         `http://api.openweathermap.org/data/2.5/weather?appid=${
@@ -24,24 +51,66 @@ const Home = () => {
         }
       )
       .then((res) => {
-        console.log(res.data);
+        setWeatherDetails(() => {
+          return {
+            name: res.data.name,
+            timezone: res.data.timezone,
+            sunrise: res.data.sys.sunrise,
+            sunset: res.data.sys.sunset,
+            temperature: res.data.main.temp,
+            wind_speed: res.data.wind.speed,
+            humidity: res.data.main.humidity,
+            pressure: res.data.main.pressure,
+            visibility: res.data.visibility,
+            description: res.data.weather[0].main,
+            icon: res.data.weather[0].icon,
+          };
+        });
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        ErrorAlert("Location not found!");
       });
     setSearching(false);
+    setLoading(false);
   };
 
-  //   const Container = styled(Box)({
-  //     height: "100vh",
-  //     width: "100%",
-  //     backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.5)),url("/images/morning.jpg")`,
-  //     backgroundSize: "cover",
-  //     backgroundPosition: "center",
-  //     backgroundColor: "rgba(255, 255, 255, 0.1)",
-  //     WebkitBackdropFilter: "blur(10px)",
-  //     backdropFilter: "blur(10px)",
-  //   });
+  useEffect(() => {
+    const fetchKolkataWeather = async () => {
+      await axios
+        .get(
+          `http://api.openweathermap.org/data/2.5/weather?appid=${
+            import.meta.env.VITE_OPENWEATHERMAP_API_KEY
+          }&q=Kolkata`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          setWeatherDetails(() => {
+            return {
+              name: res.data.name,
+              timezone: res.data.timezone,
+              sunrise: res.data.sys.sunrise,
+              sunset: res.data.sys.sunset,
+              temperature: res.data.main.temp,
+              wind_speed: res.data.wind.speed,
+              humidity: res.data.main.humidity,
+              pressure: res.data.main.pressure,
+              visibility: res.data.visibility,
+              description: res.data.weather[0].main,
+              icon: res.data.weather[0].icon,
+            };
+          });
+        })
+        .catch(() => {
+          ErrorAlert("Network Error!");
+        });
+      setLoading(false);
+    };
+    fetchKolkataWeather();
+  }, []);
 
   return (
     <FlexCenter flexDirection="column">
@@ -51,6 +120,8 @@ const Home = () => {
           query: string,
           setSearching: Dispatch<SetStateAction<boolean>>
         ) => fetchWeather(event, query, setSearching)}
+        weatherDetails={weatherDetails}
+        loading={loading}
       />
     </FlexCenter>
   );
