@@ -11,6 +11,8 @@ import { ErrorAlert, SuccessAlert } from "../components/Alert";
 import { Dispatch, SetStateAction } from "react";
 import { auth, db } from "../../firebase/firebaseConfig";
 import { addDoc, collection } from "firebase/firestore";
+import { useDispatch } from "react-redux";
+import { login } from "../../container/auth";
 
 type Values = {
   name: string;
@@ -19,6 +21,7 @@ type Values = {
 };
 
 const Signup = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const googleAuthProvider = new GoogleAuthProvider();
   const githubAuthProvider = new GithubAuthProvider();
@@ -30,6 +33,14 @@ const Signup = () => {
     setDisabled(true);
     await createUserWithEmailAndPassword(auth, values.email, values.password)
       .then(async (res) => {
+        dispatch(
+          login({
+            uid: res.user.uid,
+            email: res.user.email,
+            name: res.user.displayName,
+            photoURL: res.user.photoURL,
+          })
+        );
         await addDoc(collection(db, "users"), {
           email: values.email,
           name: values.name,
@@ -50,6 +61,14 @@ const Signup = () => {
   async function signInWithGoogle() {
     signInWithPopup(auth, googleAuthProvider)
       .then(async (res) => {
+        dispatch(
+          login({
+            uid: res.user.uid,
+            email: res.user.email,
+            name: res.user.displayName,
+            photoURL: res.user.photoURL,
+          })
+        );
         await addDoc(collection(db, "users"), {
           email: res.user.email,
           name: res.user.displayName,
@@ -68,6 +87,14 @@ const Signup = () => {
   async function signInWithGithub() {
     signInWithPopup(auth, githubAuthProvider)
       .then(async (res) => {
+        dispatch(
+          login({
+            uid: res.user.uid,
+            email: res.user.email,
+            name: res.user.displayName,
+            photoURL: res.user.photoURL,
+          })
+        );
         await addDoc(collection(db, "users"), {
           email: res.user.email,
           name: res.user.displayName,

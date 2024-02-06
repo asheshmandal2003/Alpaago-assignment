@@ -16,12 +16,16 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import { ErrorAlert, SuccessAlert } from "./Alert";
+import { logout } from "../../container/auth";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Avatar() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const phone = useMediaQuery("(max-width:600)");
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
+  const userImg = useSelector((state: any) => state.auth.photoURL);
 
   const handleMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -34,6 +38,7 @@ export default function Avatar() {
     setLoggingOut(true);
     await signOut(auth)
       .then(() => {
+        dispatch(logout());
         navigate("/auth/signin");
         SuccessAlert("You're now logged out!");
       })
@@ -51,10 +56,14 @@ export default function Avatar() {
         onClick={handleMenu}
         sx={{ ml: 2 }}
       >
-        <AccountCircleOutlined
-          fontSize={phone ? "medium" : "large"}
-          sx={{ color: "#000" }}
-        />
+        {userImg ? (
+          <AvatarIcon src={userImg} alt="userImg" />
+        ) : (
+          <AccountCircleOutlined
+            fontSize={phone ? "medium" : "large"}
+            sx={{ color: "#000" }}
+          />
+        )}
       </IconButton>
       <Menu
         id="menu-appbar"
@@ -70,7 +79,7 @@ export default function Avatar() {
         }}
         open={Boolean(anchorEl)}
         onClose={handleClose}
-        sx={{ mt: "50px", padding: 5 }}
+        sx={{ mt: "60px", padding: 5 }}
       >
         <MenuList sx={{ width: 200 }}>
           <MenuItem onClick={handleClose}>
