@@ -10,6 +10,7 @@ import {
   Tooltip,
   Typography,
   styled,
+  useMediaQuery,
 } from "@mui/material";
 import { FlexCenter } from "../components/FlexCenter";
 import { deepOrange } from "@mui/material/colors";
@@ -40,6 +41,7 @@ function Profile() {
   const [userDetails, setUserDetails] = useState<any>(() => null);
   const [docId, setDocId] = useState<any>(() => null);
   const [change, setChange] = useState(() => false);
+  const phone = useMediaQuery("(max-width:800px)");
 
   async function fetchUser() {
     const user = query(collection(db, "users"), where("email", "==", email));
@@ -76,8 +78,8 @@ function Profile() {
   };
   return (
     <FlexCenter mt={5}>
-      <Card sx={{ width: 450 }}>
-        <FlexCenter bgcolor="#eeeeee" height={100}>
+      <Card sx={{ width: phone ? "88%" : 450 }}>
+        <FlexCenter bgcolor="#eeeeee" height={phone ? 120 : 100}>
           {userImg ? (
             <Avatar
               src={userImg}

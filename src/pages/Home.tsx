@@ -113,7 +113,7 @@ const Home = () => {
   }, []);
 
   return (
-    <FlexCenter flexDirection="column">
+    <FlexCenter flexDirection="column" mb={5}>
       <WeatherCard
         onSubmit={(
           event: ChangeEvent<HTMLFormElement>,

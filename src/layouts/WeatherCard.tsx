@@ -8,6 +8,7 @@ import {
   Stack,
   Typography,
   styled,
+  useMediaQuery,
 } from "@mui/material";
 import Searchbar from "../components/Searchbar";
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
@@ -56,19 +57,47 @@ interface SearchbarProps {
 
 const WeatherCard = ({ onSubmit, weatherDetails, loading }: SearchbarProps) => {
   const navigate = useNavigate();
+  const phone = useMediaQuery("(max-width:800px)");
   return (
     <>
-      <FlexCenter my={5} alignItems="center" flexWrap="wrap">
-        <Button
-          variant="outlined"
-          color="inherit"
-          sx={{ mr: 2 }}
-          onClick={() => navigate("/users")}
-        >
-          Active Users
-        </Button>
+      <FlexCenter
+        my={phone ? 2 : 5}
+        gap={2}
+        alignItems="center"
+        flexWrap="wrap"
+      >
+        {phone && (
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            width={phone ? "80%" : 430}
+            height={35}
+          >
+            <Button
+              fullWidth
+              size="small"
+              variant="outlined"
+              color="inherit"
+              sx={{ mr: 2 }}
+              onClick={() => navigate("/users")}
+            >
+              Active Users
+            </Button>
+            <Avatar />
+          </Box>
+        )}
+        {!phone && (
+          <Button
+            variant="outlined"
+            color="inherit"
+            sx={{ mr: 2 }}
+            onClick={() => navigate("/users")}
+          >
+            Active Users
+          </Button>
+        )}
         <Searchbar onSubmit={onSubmit} />
-        <Avatar />
+        {!phone && <Avatar />}
       </FlexCenter>
       <FlexCenter>
         <Grid

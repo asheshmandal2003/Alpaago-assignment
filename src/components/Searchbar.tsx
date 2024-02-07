@@ -14,7 +14,7 @@ const Search = styled("form")(({ theme }) => ({
   height: 50,
   display: "flex",
   alignItems: "center",
-  [theme.breakpoints.up(600)]: {
+  [theme.breakpoints.up(800)]: {
     width: 500,
   },
 }));
@@ -37,7 +37,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
-    [theme.breakpoints.up(600)]: {
+    [theme.breakpoints.up(800)]: {
       width: 430,
     },
   },
