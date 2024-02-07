@@ -41,7 +41,7 @@ const Home = () => {
     setLoading(true);
     await axios
       .get(
-        `http://api.openweathermap.org/data/2.5/weather?appid=${
+        `https://api.openweathermap.org/data/2.5/weather?appid=${
           import.meta.env.VITE_OPENWEATHERMAP_API_KEY
         }&q=${query}`,
         {
