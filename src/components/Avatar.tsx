@@ -82,7 +82,12 @@ export default function Avatar() {
         sx={{ mt: "60px", padding: 5 }}
       >
         <MenuList sx={{ width: 200 }}>
-          <MenuItem onClick={handleClose}>
+          <MenuItem
+            onClick={() => {
+              navigate("/profile");
+              handleClose();
+            }}
+          >
             <AvatarIcon
               sx={{ mr: 1, height: phone ? 26 : 36, width: phone ? 26 : 36 }}
             />{" "}

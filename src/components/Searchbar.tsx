@@ -55,7 +55,7 @@ const Searchbar = ({ onSubmit }: SearchbarProps) => {
   const [query, setQuery] = useState(() => "");
   const [searching, setSearching] = useState(() => false);
   const handleQueryChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setQuery((prevQuery) => (prevQuery = event.target.value));
+    setQuery(event.target.value);
   };
   return (
     <Search
